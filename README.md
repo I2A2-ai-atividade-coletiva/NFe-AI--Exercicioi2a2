@@ -2,16 +2,23 @@
 
 Este projeto permite consultar e analisar dados de Notas Fiscais eletrônicas (NFe) e documentos PDF de forma interativa, usando inteligência artificial e um chat em linguagem natural. Desenvolvido em Python com Streamlit e integração com IA via LangChain e Groq.
 
+## 🔀 Versões da Aplicação
+
+O projeto possui **duas versões independentes** do app para consulta dos documentos:
+
+- **app.py**: Utiliza FAISS para indexação vetorial local, embeddings via Hugging Face e permite consultas sem depender de LLMs externas (exceto embeddings). Ideal para uso local e offline (com modelo de embedding disponível).
+- **app_groq.py**: Utiliza a API da Groq para consultas com modelos de linguagem de última geração (LLMs) hospedados na nuvem. Necessita de chave de API válida e conexão com a internet.
+
+Escolha a versão conforme sua necessidade de processamento local ou uso de IA em nuvem.
+
 ## 📁 Estrutura do Projeto
 
 ```
 NFe-AI-Exercicioi2a2/
 ├── .env.exemple        # Exemplo de variáveis de ambiente
-├── .gitignore          # Padrões para arquivos ignorados pelo Git
-├── .venv/              # Ambiente virtual Python (opcional)
 ├── README.md           # Este arquivo
-├── app.py              # Aplicação principal (Streamlit)
-├── app_groq.py         # Variante da aplicação (Groq)
+├── app.py              # App com FAISS + embeddings Hugging Face (consulta local)
+├── app_groq.py         # App com API Groq (consulta via LLM na nuvem)
 ├── requirements.txt    # Dependências do projeto
 ├── data/               # Dados usados pela aplicação
 │   └── 202401_NFs/
