@@ -6,7 +6,6 @@ Este projeto permite consultar e analisar dados de Notas Fiscais eletrônicas (N
 
 ```
 NFe-AI-Exercicioi2a2/
-├── .env                # Variáveis de ambiente (NÃO versionar)
 ├── .env.exemple        # Exemplo de variáveis de ambiente
 ├── .gitignore          # Padrões para arquivos ignorados pelo Git
 ├── .venv/              # Ambiente virtual Python (opcional)
