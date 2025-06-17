@@ -1,101 +1,125 @@
 # NFe-AI - Chat com Documentos Fiscais
 
-Este projeto permite consultar e analisar dados de Notas Fiscais eletrônicas (NFe) e documentos PDF de forma interativa, usando inteligência artificial e um chat em linguagem natural. Desenvolvido em Python com Streamlit e integração com IA via LangChain e Groq.
+Este projeto oferece uma interface de chat interativa para consultar e analisar dados de Notas Fiscais eletrônicas (NFe) e documentos PDF usando inteligência artificial. Desenvolvido em Python, a solução integra a velocidade da API Groq com a precisão da busca vetorial local para fornecer respostas rápidas e contextuais.
 
-## 🔀 Versões da Aplicação
+## 🌟 Principais Funcionalidades
 
-O projeto possui **duas versões independentes** do app para consulta dos documentos:
-
-- **app.py**: Utiliza FAISS para indexação vetorial local, embeddings via Hugging Face e permite consultas sem depender de LLMs externas (exceto embeddings). Ideal para uso local e offline (com modelo de embedding disponível).
-- **app_groq.py**: Utiliza a API da Groq para consultas com modelos de linguagem de última geração (LLMs) hospedados na nuvem. Necessita de chave de API válida e conexão com a internet.
-
-Escolha a versão conforme sua necessidade de processamento local ou uso de IA em nuvem.
+- **Chat Interativo:** Converse com seus documentos em linguagem natural.
+- **Suporte a Múltiplos Formatos:** Analisa dados de arquivos CSV e extrai texto de documentos PDF.
+- **Dois Modos de Operação:**
+    - **Modo Avançado (Padrão):** Utiliza busca vetorial semântica (LangChain + FAISS + Embeddings Locais) para encontrar os trechos mais relevantes dos documentos antes de consultar o LLM. Oferece respostas mais precisas e contextuais.
+    - **Modo Simples (Fallback):** Utiliza uma busca por palavra-chave mais leve, ideal para ambientes com menos recursos ou para quando as dependências avançadas não estão disponíveis.
+- **Processamento Local:** O modelo de embeddings (que transforma texto em números) e o índice vetorial rodam 100% localmente, garantindo que o conteúdo dos seus documentos não saia da sua máquina (apenas a pergunta e o contexto relevante são enviados ao LLM).
 
 ## 📁 Estrutura do Projeto
 
 ```
 NFe-AI-Exercicioi2a2/
-├── .env                # Variáveis de ambiente (NÃO versionar)
-├── .env.exemple        # Exemplo de variáveis de ambiente
-├── .gitignore          # Padrões para arquivos ignorados pelo Git
-├── .venv/              # Ambiente virtual Python (opcional)
-├── README.md           # Este arquivo
-├── app.py              # App com FAISS + embeddings Hugging Face (consulta local)
-├── app_groq.py         # App com API Groq (consulta via LLM na nuvem)
-├── requirements.txt    # Dependências do projeto
-├── data/               # Dados usados pela aplicação
+├── .venv/              # Ambiente virtual Python (gerado localmente)
+├── data/               # Pasta para colocar seus arquivos CSV e PDF.
 │   └── 202401_NFs/
-│       ├── 202401_NFs_Cabecalho.csv    # CSV com cabeçalhos das NFs
-│       └── 202401_NFs_Itens.csv        # CSV com itens das NFs
+│       ├── 202401_NFs_Cabecalho.csv
+│       └── 202401_NFs_Itens.csv
+├── models/             # Pasta para modelos Hugging Face (gerado pelo download_model.py).
+│   └── sentence-transformers/
+│       └── all-MiniLM-L6-v2/
+├── .env                # Arquivo com suas variáveis de ambiente (criado a partir do .env.exemple).
+├── .env.exemple        # Arquivo de exemplo para as variáveis de ambiente.
+├── .gitignore          # Arquivos e pastas a serem ignorados pelo Git.
+├── app.py              # Script principal da aplicação Streamlit.
+├── download_model.py   # Script para baixar o modelo de embeddings.
+├── requirements.txt    # Lista de dependências do projeto.
+└── README.md           # Este arquivo.
 ```
 
-## 🚀 Como Instalar
+## 🚀 Instalação e Configuração
 
-1. **Clone o repositório:**
-   ```bash
-   git clone <url-do-repositorio>
-   cd NFe-AI-Exercicioi2a2
-   ```
+Siga estes passos para configurar o ambiente e rodar o projeto.
 
-2. **Crie um ambiente virtual (opcional, mas recomendado):**
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
+### 1. Clone o Repositório
+```bash
+git clone <url-do-seu-repositorio>
+cd NFe-AI-Exercicioi2a2
+```
 
-3. **Instale as dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 2. Crie e Ative um Ambiente Virtual (Recomendado)
+O uso de um ambiente virtual é essencial para evitar conflitos de dependências.
 
-## ⚙️ Configuração
+```bash
+# Cria o ambiente
+python -m venv .venv
 
-1. **Variáveis de ambiente:**
-   - Copie o arquivo `.env.exemple` para `.env`:
-     ```bash
-     cp .env.exemple .env
-     ```
-   - Preencha os valores necessários, principalmente:
-     - `GROQ_API_KEY`: Chave da API Groq (obrigatória)
-     - `EXTRACT_DIR`: Caminho para a pasta de dados (opcional, padrão: `data`)
-     - `VECTOR_INDEX_PATH`: Caminho para o índice vetorial FAISS (opcional)
+# Ativa o ambiente
+# No Windows:
+.venv\Scripts\activate
+# No macOS/Linux:
+source .venv/bin/activate
+```
+> **Atenção:** Em sistemas Linux modernos (como Ubuntu 23.04+), a instalação de pacotes com `pip` fora de um ambiente virtual é bloqueada (PEP 668). O uso do ambiente virtual resolve isso.
 
-2. **Adicione seus arquivos CSV e PDFs na pasta `data/` ou subpastas, conforme desejado.**
+### 3. Instale as Dependências
+Com o ambiente ativado, instale todas as bibliotecas necessárias a partir do `requirements.txt`.
 
-## 🏃 Como Rodar
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-Execute a aplicação principal com Streamlit:
+### 4. Baixe o Modelo de Embedding
+Para que o **Modo Avançado** funcione, você precisa baixar o modelo de embedding localmente. Execute este comando **apenas uma vez**:
+
+```bash
+python download_model.py
+```
+Isso criará a pasta `models` com os arquivos do modelo.
+
+### 5. Configure as Variáveis de Ambiente
+Você precisa de uma chave da API Groq para que o LLM funcione.
+
+```bash
+# Copie o arquivo de exemplo
+cp .env.exemple .env
+```
+Agora, abra o arquivo `.env` e adicione sua chave da API Groq:
+
+```dotenv
+# .env
+GROQ_API_KEY="gsk_SuaChaveDaAPIAqui..."
+```
+
+### 6. Adicione Seus Dados
+Coloque seus arquivos `.csv` e `.pdf` dentro da pasta `data/`. A aplicação buscará os arquivos automaticamente neste diretório.
+
+## 🏃 Como Rodar a Aplicação
+
+Com o ambiente ativado e as configurações prontas, inicie a aplicação Streamlit:
 
 ```bash
 streamlit run app.py
 ```
 
-Acesse o endereço exibido no terminal (geralmente http://localhost:8501).
+Acesse o endereço local que aparecer no terminal (geralmente `http://localhost:8501`).
 
-## 💬 Exemplos de Uso
+## 🛠️ Solução de Erros Comuns (Troubleshooting)
 
-- Pergunte: `Qual o valor total da nota fiscal 12345?`
-- Pergunte: `Resuma o documento XYZ.pdf.`
-- Pergunte: `Liste todos os produtos vendidos para o cliente João.`
+- **Erro `externally-managed-environment`:** Você esqueceu de ativar o ambiente virtual (`source .venv/bin/activate`) antes de usar o `pip install`.
 
-A resposta será gerada pela IA com base nos dados dos arquivos CSV e PDFs presentes em `data/`.
+- **Aplicação não mostra tela:** Verifique se não há erros de sintaxe no terminal onde você executou `streamlit run`. Certifique-se também de que a função `main()` é chamada no final do `app.py` com o bloco `if __name__ == "__main__":`.
 
-## 📝 Observações
+- **Erro `Modelo local não encontrado`:** Você não executou o script de download. Pare a aplicação e rode `python download_model.py`.
 
-- A aplicação depende de uma chave válida da API Groq para funcionar.
-- Os arquivos CSV devem seguir o padrão dos exemplos fornecidos.
-- O índice vetorial FAISS é criado automaticamente na primeira execução.
-- Para adicionar novos dados, basta colocar os arquivos na pasta `data/` e reiniciar a aplicação.
+- **Erro de Chave Groq:** Verifique se a chave no arquivo `.env` está correta e se o arquivo foi nomeado exatamente como `.env` (e não `.env.txt`).
+
+- **Arquivos não são encontrados:** Certifique-se de que seus arquivos PDF e CSV estão dentro da pasta `data` na raiz do projeto.
 
 ## 📚 Tecnologias Utilizadas
-- Python 3.8+
-- Streamlit
-- pandas
-- langchain
-- Groq API
-- FAISS
-- dotenv
 
----
+- **Python 3.8+**
+- **Streamlit:** Para a interface web interativa.
+- **LangChain:** Para orquestrar o fluxo de IA (RAG).
+- **Groq API:** Para inferência de LLM de alta velocidade.
+- **Sentence-Transformers (Hugging Face):** Para a geração de embeddings de texto.
+- **FAISS (Facebook AI):** Para busca de similaridade vetorial de alta performance.
+- **Pandas:** Para manipulação de dados de arquivos CSV.
+- **PyMuPDF / PyPDF2:** Para extração de texto de arquivos PDF.
 
-Sinta-se à vontade para contribuir ou sugerir melhorias!
