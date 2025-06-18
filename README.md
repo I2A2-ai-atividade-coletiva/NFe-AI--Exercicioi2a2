@@ -38,7 +38,7 @@ Siga estes passos para configurar o ambiente e rodar o projeto.
 
 ### 1. Clone o Repositório
 ```bash
-git clone <url-do-seu-repositorio>
+git clone https://github.com/I2A2-ai-atividade-coletiva/NFe-AI--Exercicioi2a2
 cd NFe-AI-Exercicioi2a2
 ```
 
